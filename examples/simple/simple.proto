@@ -1,9 +1,94 @@
-// A very simple protocol definition, consisting of only
-// one message.
 
-syntax = "proto2";
+syntax = "proto3";
 
+/* Variant with 3 "oneof" fields */
+//message SimpleMessage {
+//    int32 lucky_number = 1;
+//    oneof animals {
+//        Snail snail = 2;
+//        Eagle eagle = 3;
+//        Tiger tiger = 4;
+//    }
+//}
+
+/* Variant with 50 "oneof" fields */
 message SimpleMessage {
-    required int32 lucky_number = 1;
+    int32 lucky_number = 1;
+    oneof animals {
+        Snail snail = 2;
+        Eagle eagle = 3;
+        Tiger tiger1 = 4;
+        Tiger tiger2 = 5;
+        Tiger tiger3 = 6;
+        Tiger tiger4 = 7;
+        Tiger tiger5 = 8;
+        Tiger tiger6 = 9;
+        Tiger tiger7 = 10;
+        Tiger tiger8 = 11;
+        Tiger tiger9 = 12;
+        Tiger tiger10 = 13;
+        Tiger tiger11 = 14;
+        Tiger tiger12 = 15;
+        Tiger tiger13 = 16;
+        Tiger tiger14 = 17;
+        Tiger tiger15 = 18;
+        Tiger tiger16 = 19;
+        Tiger tiger17 = 20;
+        Tiger tiger18 = 21;
+        Tiger tiger19 = 22;
+        Tiger tiger20 = 23;
+        Tiger tiger21 = 24;
+        Tiger tiger22 = 25;
+        Tiger tiger23 = 26;
+        Tiger tiger24 = 27;
+        Tiger tiger25 = 28;
+        Tiger tiger26 = 29;
+        Tiger tiger27 = 30;
+        Tiger tiger28 = 31;
+        Tiger tiger29 = 32;
+        Tiger tiger30 = 33;
+        Tiger tiger31 = 34;
+        Tiger tiger32 = 35;
+        Tiger tiger33 = 36;
+        Tiger tiger34 = 37;
+        Tiger tiger35 = 38;
+        Tiger tiger36 = 39;
+        Tiger tiger37 = 40;
+        Tiger tiger38 = 41;
+        Tiger tiger39 = 42;
+        Tiger tiger40 = 43;
+        Tiger tiger41 = 44;
+        Tiger tiger42 = 45;
+        Tiger tiger43 = 46;
+        Tiger tiger44 = 47;
+        Tiger tiger45 = 48;
+        Tiger tiger46 = 49;
+        Tiger tiger47 = 50;
+        Tiger tiger48 = 51;
+    }
 }
 
+
+
+
+message Snail {
+    int32 length = 1;
+    bool poisonous = 4;
+}
+
+message Eagle {
+    uint32 width = 5;
+    bool is_airborn = 6;
+}
+
+message Tiger {
+    Color eye_color = 7;
+    Color fur_color = 8;
+
+    enum Color {
+        COLOR_UNDEFINED = 0;
+        COLOR_BLUE = 1;
+        COLOR_GREEN = 2;
+        COLOR_BROWN = 3;
+    }
+}

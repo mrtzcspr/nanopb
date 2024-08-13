@@ -3,14 +3,36 @@
 #include <pb_decode.h>
 #include "simple.pb.h"
 
+#define LOG 0
+#if LOG
+#define LOG_INFO(format, ...) printf(format, ##__VA_ARGS__)
+#define LOG_BUFFER(buffer, size)                                       \
+    do                                                                 \
+    {                                                                  \
+        printf("Content of `%s` (length: %d):\n", #buffer, (int)size); \
+        for (size_t i = 0; i < (size); i++)                            \
+        {                                                              \
+            printf("%02X ", ((uint8_t *)(buffer))[i]);                 \
+        }                                                              \
+        printf("\n");                                                  \
+    } while (0)
+#else
+#define LOG_INFO(format, ...)
+#define LOG_BUFFER(buffer, size)
+#endif
+
+#define ENCODE_COUNT 100000
+#define DECODE_COUNT 0
+
 int main()
 {
     /* This is the buffer where we will store our message. */
-    uint8_t buffer[128];
-    size_t message_length;
+    uint8_t buffer[128] = {0x08, 0x0D}; // result with "message.lucky_number = 13"
+    size_t message_length = 2;          // result with "message.lucky_number = 13"
     bool status;
     
     /* Encode our message */
+    for (size_t i = 0; i < ENCODE_COUNT; i++)
     {
         /* Allocate space on the stack to store the message data.
          *
@@ -42,9 +64,10 @@ int main()
     /* Now we could transmit the message over network, store it in a file or
      * wrap it to a pigeon's leg.
      */
+    LOG_BUFFER(buffer, message_length);
 
     /* But because we are lazy, we will just decode it immediately. */
-    
+    for (size_t i = 0; i < DECODE_COUNT; i++)
     {
         /* Allocate space for the decoded message. */
         SimpleMessage message = SimpleMessage_init_zero;
@@ -53,7 +76,7 @@ int main()
         pb_istream_t stream = pb_istream_from_buffer(buffer, message_length);
         
         /* Now we are ready to decode the message. */
-        status = pb_decode(&stream, SimpleMessage_fields, &message);
+        status = pb_decode_noinit(&stream, SimpleMessage_fields, &message);
         
         /* Check for errors... */
         if (!status)
@@ -63,7 +86,7 @@ int main()
         }
         
         /* Print the data contained in the message. */
-        printf("Your lucky number was %d!\n", (int)message.lucky_number);
+        LOG_INFO("Your lucky number was %d!\n", (int)message.lucky_number);
     }
     
     return 0;
