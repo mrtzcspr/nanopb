@@ -22,7 +22,31 @@
 #endif
 
 #define ENCODE_COUNT 100000
+//#define ENCODE_COUNT 1
 #define DECODE_COUNT 0
+
+bool encode_animal(pb_ostream_t *stream, int32_t lucky, pb_size_t animal_field_number, const pb_msgdesc_t *specific_animal_fields, const void *animal)
+{
+    bool result = pb_encode_tag(stream, PB_WT_VARINT, SimpleMessage_lucky_number_tag);
+    LOG_BUFFER((stream->state - stream->bytes_written), stream->bytes_written);
+    if (!result)
+        return result;
+
+    result = pb_encode_varint(stream, lucky);
+    LOG_BUFFER((stream->state - stream->bytes_written), stream->bytes_written);
+
+    if (!result)
+        return result;
+
+    result = pb_encode_tag(stream, PB_WT_STRING, animal_field_number);
+    LOG_BUFFER((stream->state - stream->bytes_written), stream->bytes_written);
+
+    if (!result) return result;
+
+    result = pb_encode_submessage(stream, specific_animal_fields, animal);
+    LOG_BUFFER((stream->state - stream->bytes_written), stream->bytes_written);
+    return result;
+}
 
 int main()
 {
@@ -48,9 +72,12 @@ int main()
         
         /* Fill in the lucky number */
         message.lucky_number = 13;
+        message.which_animals = SimpleMessage_tiger1_tag;
+        message.animals.tiger1.eye_color = Tiger_Color_COLOR_BROWN;
         
         /* Now we are ready to encode the message! */
-        status = pb_encode(&stream, SimpleMessage_fields, &message);
+        //status = pb_encode(&stream, SimpleMessage_fields, &message);
+        status = encode_animal(&stream, message.lucky_number, SimpleMessage_tiger1_tag, Tiger_fields, &message.animals);
         message_length = stream.bytes_written;
         
         /* Then just check for any errors.. */
